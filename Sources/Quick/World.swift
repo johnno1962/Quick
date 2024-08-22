@@ -65,7 +65,7 @@ final internal class World: _WorldBase {
     internal var isRunningAdditionalSuites = false
 #endif
 
-    private var specs: [String: ExampleGroup] = [:]
+    private var specs: [UnsafeRawPointer: ExampleGroup] = [:]
     private var sharedExamples: [String: SharedExampleClosure] = [:]
     private let configuration = QCKConfiguration()
 
@@ -124,7 +124,7 @@ final internal class World: _WorldBase {
      - returns: Whether the root example group for the given spec class has been already initialized or not.
      */
     internal func isRootExampleGroupInitialized(forSpecClass specClass: QuickSpec.Type) -> Bool {
-        let name = String(describing: specClass)
+        let name = unsafeBitCast(specClass, to: UnsafeRawPointer.self)
         return specs.keys.contains(name)
     }
 
@@ -147,7 +147,7 @@ final internal class World: _WorldBase {
         - returns: The root example group for the class.
     */
     internal func rootExampleGroup(forSpecClass specClass: QuickSpec.Type) -> ExampleGroup {
-        let name = String(describing: specClass)
+        let name = unsafeBitCast(specClass, to: UnsafeRawPointer.self)
 
         if let group = specs[name] {
             return group
